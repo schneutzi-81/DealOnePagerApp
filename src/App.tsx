@@ -101,9 +101,9 @@ function App() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[300px_1fr] lg:gap-8">
-          {/* Left column: uploader */}
-          <div>
+        <div className={`grid grid-cols-1 gap-6 ${activeTab === 'preview' ? '' : 'lg:grid-cols-[300px_1fr] lg:gap-8'}`}>
+          {/* Left column: uploader (hidden on preview) */}
+          <div className={activeTab === 'preview' ? 'hidden' : ''}>
             <div className="rounded-2xl bg-white p-5 shadow-sm sm:p-6">
               <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-400">
                 1 · Upload Markdown
