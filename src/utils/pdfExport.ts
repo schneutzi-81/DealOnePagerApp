@@ -29,7 +29,7 @@ export async function exportToPDF(filename = 'deal-one-pager.pdf'): Promise<void
   const imgHeightMm = (canvasHeight * pdfWidth) / canvasWidth;
 
   const pdf = new jsPDF({
-    orientation: imgHeightMm > pdfWidth ? 'portrait' : 'portrait',
+    orientation: 'portrait',
     unit: 'mm',
     format: 'a4',
   });
