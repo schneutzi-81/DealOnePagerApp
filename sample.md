@@ -1,84 +1,112 @@
-# Project Alpha – Digital Transformation
+# Acme Corp — Digital Transformation Platform
 
-## Client Name
+## Opportunity ID
+OPP-2024-000123
+
+## Business Lines
+Managed Cloud Services | Software Licensing
+
+## Company
 Acme Corporation
 
-## Date
-2024-06-15
+## Industry
+Financial Services
 
-## Deal Owner / Lead
+## Company Facts & Figures
+12,000 employees | Revenue $2.4B | Headquartered in Frankfurt, DE | Offices in 18 countries | Core products: Banking platform, Risk analytics
+
+## Subject / Scope of the Deal
+Acme Corporation is seeking a strategic technology partner to modernise their core banking infrastructure and migrate to a cloud-native architecture. SoftwareOne will deliver end-to-end cloud transformation covering infrastructure migration, application modernisation and managed operations.
+
+## Contract Term / Timeline
+3 years (Jan 2025 – Dec 2027)
+
+## Summary / Key Points
+- Cloud-native migration of 40+ legacy applications to AWS
+- Managed services contract with SLA-backed uptime of 99.95%
+- Estimated 30% TCO reduction over 3 years
+- Dedicated Centre of Excellence team embedded at client site
+
+## Risks & Mitigation
+- Data migration complexity across 3 legacy databases | Assign dedicated data architect for first 8 weeks; run parallel systems during cutover
+- Regulatory / compliance risk (BaFin) | Engage SoftwareOne legal & compliance team; include DPA review milestone
+- Stakeholder alignment risk | Weekly steering committee with mandatory C-level attendance
+- Scope creep | Formal change-request process with impact assessment gate
+
+## Deal Name
+Acme Corp – Cloud Transformation
+
+## Client
+Acme Corporation
+
+## Business Type
+Managed Services + Software Licensing
+
+## TCV
+€ 4,200,000
+
+## Signing Quarter
+Q4 2024
+
+## Account Manager
 Jane Smith
 
-## Deal Size / Value
-$450,000
+## Presales
+Tom Chen
 
-## Timeline / Duration
-6 months (July 2024 – December 2024)
+## Sponsor
+Maria González (VP Sales DACH)
 
-## Executive Summary
-Acme Corporation is seeking a trusted technology partner to modernise their
-customer-facing digital infrastructure. This proposal outlines our approach to
-delivering a cloud-native platform that improves customer experience, reduces
-operational costs by 30%, and enables real-time analytics.
+## Customer Timeline
+- RFP Submission Deadline | 15 Nov 2024
+- Vendor Presentations | 28–29 Nov 2024
+- Decision Date | 13 Dec 2024
+- Contract Signing | 20 Dec 2024
+- Kick-off | 08 Jan 2025
 
-## Scope of Work
-- Migrate legacy on-premise systems to AWS cloud infrastructure
-- Redesign and rebuild the customer portal (web + mobile)
-- Integrate CRM (Salesforce) with the new platform
-- Set up CI/CD pipelines and automated testing frameworks
-- Train internal engineering teams on the new stack
+## Commercials – TCV | CM1
+- Year 1 – Infrastructure Migration | € 1,600,000
+- Year 2 – Application Modernisation | € 1,400,000
+- Year 3 – Managed Operations | € 1,200,000
+- CM1 Target | 32%
 
-## Key Deliverables
-1. Discovery & Architecture document (Week 2)
-2. Infrastructure migration plan and runbook (Week 4)
-3. MVP customer portal (Month 3)
-4. Full platform launch (Month 5)
-5. Handover documentation and training (Month 6)
+## Help Needed
+- Legal review of DPA & MSA | Legal team – due 30 Oct
+- Reference customer for banking sector | Account Management
+- Pricing exception approval (>3yr contract) | VP Sales + Finance
 
-## Pricing Overview
-| Phase | Description | Cost |
-|-------|-------------|------|
-| Phase 1 | Discovery & Architecture | $50,000 |
-| Phase 2 | Infrastructure Migration | $150,000 |
-| Phase 3 | Portal Development | $180,000 |
-| Phase 4 | Testing & Launch | $50,000 |
-| Phase 5 | Training & Handover | $20,000 |
-| **Total** | | **$450,000** |
+## Stakeholder (Customer)
+- Klaus Brandt – CIO | Executive Sponsor | Positive
+- Sophie Müller – Head of IT | Programme Owner | Neutral
+- Rainer Koch – CFO | Financial Approval | Neutral
+- Legal Dept | Contract Review | Issue
 
-Payment schedule: 30% upfront, 40% at mid-point milestone, 30% on completion.
+## Competition
+- Competitor A (Accenture) | Incumbent | SoftwareOne: deeper cloud expertise + lower TCO
+- Competitor B (Capgemini) | Shortlisted | SoftwareOne: faster delivery model + local team
+- In-house team | Alternate option | SoftwareOne: proven methodology, no ramp-up
 
-## Key Risks & Mitigations
-**Risk 1 – Data Migration Complexity**
-Acme's legacy data is spread across 3 databases with inconsistent schemas.
-Mitigation: Dedicated data architect assigned for the first 4 weeks to map and
-cleanse data before migration begins.
-
-**Risk 2 – Stakeholder Availability**
-Key business stakeholders may be unavailable due to other priorities.
-Mitigation: Agree on a fixed weekly steering committee with mandatory attendance
-from both sides.
-
-**Risk 3 – Scope Creep**
-New feature requests mid-project could delay delivery.
-Mitigation: Formal change-request process with impact assessment before any
-scope additions are approved.
-
-## Team / Resources
-- **Jane Smith** – Engagement Lead
-- **Tom Chen** – Cloud Architect
-- **Priya Patel** – Full-Stack Lead Developer
-- **Carlos Ruiz** – Data Engineer
-- **Sarah Kim** – UX/UI Designer
-- **Dev Team (×3)** – Frontend & Backend Engineers
+## Additional Comments
+Acme has expressed interest in expanding scope to include HR tooling modernisation in Phase 2 (potential additional €800k). Decision maker Klaus Brandt attended SoftwareOne Summit 2023 – positive relationship. All work subject to Acme vendor security review (4-week process).
 
 ## Next Steps
-1. Sign and return the Statement of Work by 30 June 2024
-2. Kick-off meeting scheduled for 5 July 2024
-3. Client to provide access to legacy systems and data exports
-4. Legal review of data processing agreement (DPA) – due 28 June 2024
+- 2024-10-30 | Submit formal proposal & commercial terms
+- 2024-11-05 | Schedule executive briefing with Klaus Brandt
+- 2024-11-15 | Deliver RFP response
+- 2024-11-28 | Vendor presentation at Acme HQ Frankfurt
+- 2024-12-10 | Confirm contract terms with legal
 
-## Notes / Comments
-- Acme has expressed interest in a potential Phase 2 engagement for internal
-  HR tooling following this project.
-- All work is subject to Acme's standard vendor security review process.
-- Travel costs for on-site workshops (up to 3 visits) are included in the budget.
+## Bid Recommendation
+Recommended – High confidence
+
+## Sign-off Account Management
+Jane Smith
+
+## Sign-off Presales
+Tom Chen
+
+## Sign-off Delivery
+Anna Weber
+
+## Sign-off Legal
+SoftwareOne Legal – DACH

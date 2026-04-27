@@ -22,8 +22,8 @@ function App() {
   }, []);
 
   const handleFieldChange = useCallback(
-    (key: keyof DealOnePagerFields, value: string) => {
-      setFields((prev) => ({ ...prev, [key]: value }));
+    (key: keyof DealOnePagerFields, value: DealOnePagerFields[keyof DealOnePagerFields]) => {
+      setFields((prev) => ({ ...prev, [key]: value } as DealOnePagerFields));
     },
     []
   );
@@ -42,7 +42,7 @@ function App() {
     try {
       setIsExporting(true);
       await exportToPDF(
-        `${fields.dealName || 'deal-one-pager'}.pdf`
+        `${fields.customerName || fields.dealName || 'deal-one-pager'}.pdf`
           .replace(/\s+/g, '-')
           .toLowerCase()
       );
@@ -51,7 +51,7 @@ function App() {
     } finally {
       setIsExporting(false);
     }
-  }, [fields.dealName]);
+  }, [fields.customerName, fields.dealName]);
 
   return (
     <div className="min-h-screen bg-gray-100">

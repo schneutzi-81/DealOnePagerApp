@@ -1,11 +1,8 @@
 import { marked } from 'marked';
-import type { DealOnePagerFields } from '../types';
-import { FIELD_LABELS, DEFAULT_FIELDS } from '../types';
+import type { DealOnePagerFields, TableRow } from '../types';
+import { FIELD_LABELS, TABLE_FIELDS, TABLE_COL_COUNTS, DEFAULT_FIELDS } from '../types';
 
-/**
- * Normalizes a string for fuzzy matching by lowercasing, removing special
- * characters and collapsing whitespace.
- */
+/** Normalize a string for fuzzy matching. */
 function normalize(str: string): string {
   return str
     .toLowerCase()
@@ -14,108 +11,104 @@ function normalize(str: string): string {
     .trim();
 }
 
-/**
- * Attempts to match a heading string to a field key by fuzzy/substring
- * comparison against the field labels.
- */
-function matchHeadingToField(
-  heading: string
-): keyof DealOnePagerFields | null {
-  const normalizedHeading = normalize(heading);
+/** Map a heading text to a field key. */
+function matchHeading(heading: string): keyof DealOnePagerFields | null {
+  const norm = normalize(heading);
 
-  // Direct label match (normalized)
-  for (const [key, label] of Object.entries(FIELD_LABELS)) {
-    if (normalize(label) === normalizedHeading) {
-      return key as keyof DealOnePagerFields;
-    }
+  // Direct lookup in FIELD_LABELS
+  if (FIELD_LABELS[norm]) return FIELD_LABELS[norm];
+
+  // Try truncating trailing words (handles extra qualifiers like "of the deal")
+  const words = norm.split(' ');
+  for (let len = words.length - 1; len >= 1; len--) {
+    const key = words.slice(0, len).join(' ');
+    if (FIELD_LABELS[key]) return FIELD_LABELS[key];
   }
 
-  // Substring match – heading contains a key portion of the label
-  for (const [key, label] of Object.entries(FIELD_LABELS)) {
-    const normalizedLabel = normalize(label);
-    if (
-      normalizedHeading.includes(normalizedLabel) ||
-      normalizedLabel.includes(normalizedHeading)
-    ) {
-      return key as keyof DealOnePagerFields;
-    }
-  }
-
-  // Word-overlap match – at least one significant word matches
-  const headingWords = normalizedHeading.split(' ').filter((w) => w.length > 3);
-  for (const [key, label] of Object.entries(FIELD_LABELS)) {
-    const labelWords = normalize(label)
-      .split(' ')
-      .filter((w) => w.length > 3);
-    const hasOverlap = headingWords.some((w) => labelWords.includes(w));
-    if (hasOverlap) {
-      return key as keyof DealOnePagerFields;
+  // Word-overlap: match if any significant word (>3 chars) overlaps
+  const headingWords = words.filter((w) => w.length > 3);
+  for (const [labelKey, fieldKey] of Object.entries(FIELD_LABELS)) {
+    const labelWords = labelKey.split(' ').filter((w) => w.length > 3);
+    if (headingWords.some((w) => labelWords.includes(w))) {
+      return fieldKey;
     }
   }
 
   return null;
 }
 
-/**
- * Parses a Markdown string and maps heading-based sections to DealOnePager
- * fields.  Unmatched sections fall into the "notes" catch-all.
- */
+/** Parse raw text content into TableRow array. */
+function textToRows(text: string, colCount: number): TableRow[] {
+  const rows: TableRow[] = [];
+  for (const line of text.split('\n')) {
+    const cleaned = line.replace(/^[-*•]\s*/, '').trim();
+    if (!cleaned) continue;
+    const cols = cleaned.split('|').map((c) => c.trim());
+    while (cols.length < colCount) cols.push('');
+    rows.push({ cols: cols.slice(0, colCount) });
+  }
+  return rows;
+}
+
+/** Parse a markdown string and populate DealOnePagerFields. */
 export function parseMarkdownToFields(markdown: string): DealOnePagerFields {
-  const fields: DealOnePagerFields = { ...DEFAULT_FIELDS };
-  const unmatchedSections: string[] = [];
+  // Deep-clone the default (preserves empty row arrays)
+  const fields: DealOnePagerFields = JSON.parse(JSON.stringify(DEFAULT_FIELDS));
+  const unmatchedParts: string[] = [];
 
-  // Use marked's lexer to obtain tokens
   const tokens = marked.lexer(markdown);
-
   let currentField: keyof DealOnePagerFields | null = null;
-  let currentContent: string[] = [];
+  let currentLines: string[] = [];
 
-  const flushSection = () => {
-    if (currentContent.length === 0) return;
-    const content = currentContent.join('\n').trim();
-    if (!content) return;
+  const flush = () => {
+    if (!currentLines.length) return;
+    const raw = currentLines.join('\n').trim();
+    if (!raw) { currentLines = []; return; }
 
     if (currentField) {
-      // Append if field already has content (multiple sections → same field)
-      fields[currentField] = fields[currentField]
-        ? `${fields[currentField]}\n\n${content}`
-        : content;
+      if (TABLE_FIELDS.has(currentField)) {
+        const colCount = TABLE_COL_COUNTS[currentField] ?? 2;
+        const parsed = textToRows(raw, colCount);
+        if (parsed.length) {
+          (fields[currentField] as TableRow[]) = parsed;
+        }
+      } else {
+        const prev = fields[currentField] as string;
+        (fields[currentField] as string) = prev ? `${prev}\n\n${raw}` : raw;
+      }
     } else {
-      unmatchedSections.push(content);
+      unmatchedParts.push(raw);
     }
-    currentContent = [];
+    currentLines = [];
   };
 
   for (const token of tokens) {
     if (token.type === 'heading') {
-      flushSection();
-      const matched = matchHeadingToField(token.text);
-      currentField = matched;
-      // If the heading itself contains inline text that looks like a value
-      // (e.g. "Client Name: Acme Corp"), try to extract it
-      if (matched) {
+      flush();
+      currentField = matchHeading(token.text);
+
+      // Check for inline value after colon: "## Deal Name: Acme Alpha"
+      if (currentField && !TABLE_FIELDS.has(currentField)) {
         const colonIdx = token.text.indexOf(':');
         if (colonIdx !== -1) {
-          const inlineValue = token.text.slice(colonIdx + 1).trim();
-          if (inlineValue) {
-            currentContent.push(inlineValue);
-          }
+          const inlineVal = token.text.slice(colonIdx + 1).trim();
+          if (inlineVal) currentLines.push(inlineVal);
         }
       }
     } else if (token.type === 'space') {
-      // skip blank lines between tokens
+      // ignore blank separators
     } else {
-      // All non-heading, non-space tokens contribute raw text
-      currentContent.push(token.raw.trim());
+      currentLines.push(token.raw.trim());
     }
   }
 
-  flushSection();
+  flush();
 
-  // Put unmatched content into notes
-  if (unmatchedSections.length > 0) {
-    const extra = unmatchedSections.join('\n\n');
-    fields.notes = fields.notes ? `${fields.notes}\n\n${extra}` : extra;
+  if (unmatchedParts.length) {
+    const extra = unmatchedParts.join('\n\n');
+    fields.additionalComments = fields.additionalComments
+      ? `${fields.additionalComments}\n\n${extra}`
+      : extra;
   }
 
   return fields;
