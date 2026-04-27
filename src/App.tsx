@@ -37,8 +37,8 @@ function App() {
   const handleExportPDF = useCallback(async () => {
     setActiveTab('preview');
     setExportError(null);
-    // Give the DOM a tick to render the preview before capturing
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    // Wait one frame so React paints the visible preview before capture
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     try {
       setIsExporting(true);
       await exportToPDF(
@@ -190,32 +190,32 @@ Financial Services
               </div>
 
               <div className="p-4 sm:p-6">
-                {activeTab === 'edit' ? (
-                  <>
-                    <p className="mb-5 text-sm text-gray-400">
-                      Review and edit the auto-filled fields below. All fields
-                      are editable.
-                    </p>
-                    <DealForm
-                      fields={fields}
-                      onChange={handleFieldChange}
-                      onReset={handleReset}
-                    />
-                  </>
-                ) : (
-                  <div>
-                    <p className="mb-5 text-sm text-gray-400">
-                      This is how your one-pager will look in the PDF. Click
-                      &quot;Export PDF&quot; to download.
-                    </p>
-                    <p className="mb-3 text-xs text-gray-400 sm:hidden">
-                      ← Scroll horizontally to see full preview →
-                    </p>
-                    <div className="overflow-x-auto rounded-xl border border-[var(--soft-gray)] bg-[var(--light-silver)] p-4 [-webkit-overflow-scrolling:touch]">
-                      <PDFPreview fields={fields} />
-                    </div>
+                {/* Edit tab */}
+                <div className={activeTab === 'edit' ? '' : 'hidden'}>
+                  <p className="mb-5 text-sm text-gray-400">
+                    Review and edit the auto-filled fields below. All fields
+                    are editable.
+                  </p>
+                  <DealForm
+                    fields={fields}
+                    onChange={handleFieldChange}
+                    onReset={handleReset}
+                  />
+                </div>
+
+                {/* Preview tab — always rendered so it stays in sync */}
+                <div className={activeTab === 'preview' ? '' : 'hidden'}>
+                  <p className="mb-5 text-sm text-gray-400">
+                    This is how your one-pager will look in the PDF. Click
+                    &quot;Export PDF&quot; to download.
+                  </p>
+                  <p className="mb-3 text-xs text-gray-400 sm:hidden">
+                    ← Scroll horizontally to see full preview →
+                  </p>
+                  <div className="overflow-x-auto rounded-xl border border-[var(--soft-gray)] bg-[var(--light-silver)] p-4 [-webkit-overflow-scrolling:touch]">
+                    <PDFPreview fields={fields} />
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
