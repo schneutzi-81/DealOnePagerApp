@@ -5,7 +5,8 @@ import html2canvas from 'html2canvas';
  * Captures the element with id="pdf-preview" and exports it as a PDF download.
  */
 export async function exportToPDF(filename = 'deal-one-pager.pdf'): Promise<void> {
-  const element = document.getElementById('pdf-preview');
+  // Prefer the off-screen capture element (always has layout), fall back to visible preview
+  const element = document.getElementById('pdf-capture') || document.getElementById('pdf-preview');
   if (!element) {
     throw new Error('PDF preview element not found');
   }

@@ -3,6 +3,7 @@ import type { DealOnePagerFields, TableRow } from '../types';
 
 interface PDFPreviewProps {
   fields: DealOnePagerFields;
+  id?: string;
 }
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
@@ -97,10 +98,10 @@ const TwoColRows: React.FC<{ rows: TableRow[]; min?: number }> = ({ rows, min = 
 );
 
 // ── Main component ────────────────────────────────────────────────────────────
-export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields }) => {
+export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields, id = 'pdf-preview' }) => {
   return (
     <div
-      id="pdf-preview"
+      id={id}
       style={{
         width: `${PAGE_W}px`,
         minHeight: '794px',

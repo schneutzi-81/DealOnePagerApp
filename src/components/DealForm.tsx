@@ -230,7 +230,6 @@ export const DealForm: React.FC<DealFormProps> = ({ fields, onChange, onReset })
       {/* ── Deal Information ── */}
       <Section title="Deal Information">
         <div className="space-y-2">
-          <Field label="Opportunity ID" value={fields.opportunityId} onChange={str('opportunityId')} placeholder="OPP-XXXX-XXXXX" />
           <Field label="Deal Name" value={fields.dealName} onChange={str('dealName')} />
           <Field label="Client" value={fields.client} onChange={str('client')} />
           <Field label="Business Type" value={fields.businessType} onChange={str('businessType')} />

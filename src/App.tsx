@@ -203,7 +203,7 @@ Financial Services
                   />
                 </div>
 
-                {/* Preview tab — always rendered so it stays in sync */}
+                {/* Preview tab */}
                 <div className={activeTab === 'preview' ? '' : 'hidden'}>
                   <p className="mb-5 text-sm text-gray-400">
                     This is how your one-pager will look in the PDF. Click
@@ -221,6 +221,14 @@ Financial Services
           </div>
         </div>
       </main>
+
+      {/* Off-screen PDF capture target — always has layout for html2canvas */}
+      <div
+        aria-hidden="true"
+        style={{ position: 'fixed', left: '-9999px', top: 0, zIndex: -1 }}
+      >
+        <PDFPreview fields={fields} id="pdf-capture" />
+      </div>
     </div>
   );
 }
