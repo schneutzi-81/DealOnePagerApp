@@ -353,16 +353,17 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields, id = 'pdf-previe
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '6px 14px',
+          padding: '8px 14px',
           borderTop: `1px solid ${BORDER}`,
           backgroundColor: '#FAFAFA',
+          minHeight: '28px',
         }}
       >
-        <div style={{ fontSize: '8px', color: '#9CA3AF' }}>
+        <div style={{ fontSize: '8px', color: '#9CA3AF', lineHeight: '16px' }}>
           Confidential &nbsp;|&nbsp; {today}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '8px' }}>
-          <span style={{ color: '#9CA3AF', fontWeight: 600 }}>RAG Legend:</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '8px' }}>
+          <span style={{ color: '#9CA3AF', fontWeight: 600, lineHeight: '16px' }}>RAG Legend:</span>
           {[
             { label: 'Positive', color: '#22C55E' },
             { label: 'Neutral', color: '#F97316' },
@@ -371,12 +372,15 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields, id = 'pdf-previe
             <span
               key={item.label}
               style={{
+                display: 'inline-block',
                 backgroundColor: item.color,
                 color: '#fff',
-                padding: '1px 5px',
-                borderRadius: '3px',
+                padding: '2px 8px',
+                borderRadius: '4px',
                 fontWeight: 700,
-                fontSize: '7.5px',
+                fontSize: '8px',
+                lineHeight: '14px',
+                whiteSpace: 'nowrap',
               }}
             >
               {item.label}
