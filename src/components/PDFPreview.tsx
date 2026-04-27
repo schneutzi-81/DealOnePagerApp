@@ -11,7 +11,7 @@ const SECTION_BG = '#1A1A1A';
 const BORDER = '#E5E5E5';
 const LABEL_BG = '#F5F5F5';
 const CORAL = '#F7675E';
-const PAGE_W = 794; // A4 portrait px @ 96 dpi (≈210mm)
+const PAGE_W = 1123; // A4 landscape px @ 96 dpi (≈297mm)
 
 // ── Style helpers ─────────────────────────────────────────────────────────────
 const sectionHeader = (extra?: React.CSSProperties): React.CSSProperties => ({
@@ -103,7 +103,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields }) => {
       id="pdf-preview"
       style={{
         width: `${PAGE_W}px`,
-        minHeight: '1123px',
+        minHeight: '794px',
         backgroundColor: '#fff',
         fontFamily: 'Arial, Helvetica, sans-serif',
         border: `1px solid ${BORDER}`,

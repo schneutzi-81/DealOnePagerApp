@@ -15,12 +15,12 @@ export async function exportToPDF(filename = 'deal-one-pager.pdf'): Promise<void
     useCORS: true,
     logging: false,
     backgroundColor: '#ffffff',
-    width: 794,   // Match the portrait A4 preview width
+    width: 1123,   // Match the landscape A4 preview width
   });
 
-  // A4 portrait dimensions in mm
-  const pdfWidth = 210;
-  const pdfHeight = 297;
+  // A4 landscape dimensions in mm
+  const pdfWidth = 297;
+  const pdfHeight = 210;
 
   const canvasWidth = canvas.width;
   const canvasHeight = canvas.height;
@@ -30,7 +30,7 @@ export async function exportToPDF(filename = 'deal-one-pager.pdf'): Promise<void
   const imgHeightMm = (canvasHeight * pdfWidth) / canvasWidth;
 
   const pdf = new jsPDF({
-    orientation: 'portrait',
+    orientation: 'landscape',
     unit: 'mm',
     format: 'a4',
   });
