@@ -214,8 +214,18 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields }) => {
 
           {/* COMMERCIALS */}
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <TableSectionHeader label="Commercials \u2013 TCV | CM1" />
-            <TwoColRows rows={fields.commercials} min={2} />
+            <tr>
+              <td style={sectionHeader({ width: '40%' })}>ITEM</td>
+              <td style={sectionHeader({ width: '35%' })}>VALUE</td>
+              <td style={sectionHeader({ width: '25%' })}>MARGIN</td>
+            </tr>
+            {padRows(fields.commercials, 2, 3).map((r, i) => (
+              <tr key={i}>
+                <td style={cell()}>{r.cols[0]}</td>
+                <td style={cell()}>{r.cols[1]}</td>
+                <td style={cell()}>{r.cols[2]}</td>
+              </tr>
+            ))}
           </table>
         </div>
 

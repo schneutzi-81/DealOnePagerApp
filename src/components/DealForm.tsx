@@ -257,11 +257,11 @@ export const DealForm: React.FC<DealFormProps> = ({ fields, onChange, onReset })
       {/* ── Commercials ── */}
       <Section title="Commercials – TCV | CM1">
         <TableEditor
-          headers={['Item', 'Value']}
+          headers={['Item', 'Value', 'Margin']}
           rows={fields.commercials}
           onChange={tbl('commercials')}
           minRows={2}
-          cellWidths={['50%', '50%']}
+          cellWidths={['40%', '35%', '25%']}
         />
       </Section>
 

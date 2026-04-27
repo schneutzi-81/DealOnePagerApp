@@ -38,7 +38,7 @@ export interface DealOnePagerFields {
   customerTimeline: TableRow[]; // cols: [label, value]  e.g. Submission Date | 2024-07-01
 
   // ── Commercials – TCV | CM1 ──────────────────────────────────────────────
-  commercials: TableRow[]; // cols: [item, value]
+  commercials: TableRow[]; // cols: [item, value, margin]
 
   // ── Help Needed ──────────────────────────────────────────────────────────
   helpNeeded: TableRow[]; // cols: [item, details]
@@ -130,7 +130,7 @@ export const TABLE_FIELDS = new Set<keyof DealOnePagerFields>([
 export const TABLE_COL_COUNTS: Partial<Record<keyof DealOnePagerFields, number>> = {
   risksMitigation: 2,
   customerTimeline: 2,
-  commercials: 2,
+  commercials: 3,
   helpNeeded: 2,
   stakeholders: 3,
   competition: 3,
@@ -161,7 +161,7 @@ export const DEFAULT_FIELDS: DealOnePagerFields = {
   presales: '',
   sponsor: '',
   customerTimeline: emptyRows(6, 2),
-  commercials: emptyRows(4, 2),
+  commercials: emptyRows(4, 3),
   helpNeeded: emptyRows(3, 2),
   stakeholders: emptyRows(4, 3),
   competition: emptyRows(3, 3),
