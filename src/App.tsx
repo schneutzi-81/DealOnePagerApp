@@ -101,9 +101,9 @@ function App() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-10">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[300px_1fr] lg:gap-8">
           {/* Left column: uploader */}
-          <div className="lg:col-span-1">
+          <div>
             <div className="rounded-2xl bg-white p-5 shadow-sm sm:p-6">
               <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-400">
                 1 · Upload Markdown
@@ -127,7 +127,7 @@ function App() {
           </div>
 
           {/* Right column: form + preview tabs */}
-          <div className="lg:col-span-2">
+          <div>
             <div className="rounded-2xl bg-white shadow-sm">
               {/* Tabs */}
               <div className="flex border-b border-[var(--soft-gray)] px-4 sm:px-6">
