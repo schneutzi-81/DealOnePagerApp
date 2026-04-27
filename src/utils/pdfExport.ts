@@ -15,9 +15,10 @@ export async function exportToPDF(filename = 'deal-one-pager.pdf'): Promise<void
     useCORS: true,
     logging: false,
     backgroundColor: '#ffffff',
+    width: 794,   // Match the portrait A4 preview width
   });
 
-  // A4 dimensions in mm
+  // A4 portrait dimensions in mm
   const pdfWidth = 210;
   const pdfHeight = 297;
 

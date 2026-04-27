@@ -166,7 +166,9 @@ function App() {
                       &quot;Export PDF&quot; to download.
                     </p>
                     <div className="overflow-auto rounded-lg border border-gray-200 bg-gray-50 p-4">
-                      <PDFPreview fields={fields} />
+                      <div style={{ maxWidth: '100%', overflow: 'auto' }}>
+                        <PDFPreview fields={fields} />
+                      </div>
                     </div>
                   </div>
                 )}
