@@ -57,7 +57,7 @@ function App() {
     <div className="min-h-screen bg-[var(--light-silver)]">
       {/* Top nav */}
       <header className="sticky top-0 z-50 bg-white shadow-sm">
-        <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--near-black)] text-white font-bold text-sm">
               D1P
@@ -94,7 +94,7 @@ function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-screen-xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
+      <main className="px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
         {exportError && (
           <div className="mb-6 rounded-xl border-l-4 border-[var(--coral)] bg-white px-4 py-3 text-sm text-[var(--near-black)] shadow-sm">
             ⚠ {exportError}
