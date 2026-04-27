@@ -38,10 +38,10 @@ export async function exportToPDF(filename = 'deal-one-pager.pdf'): Promise<void
   let yOffset = 0;
   let remainingHeight = imgHeightMm;
 
-  while (remainingHeight > 0) {
+  while (remainingHeight > 0.5) {
     const pageHeight = Math.min(remainingHeight, pdfHeight);
-    const srcY = (yOffset / imgHeightMm) * canvasHeight;
-    const srcHeight = (pageHeight / imgHeightMm) * canvasHeight;
+    const srcY = Math.round((yOffset / imgHeightMm) * canvasHeight);
+    const srcHeight = Math.max(1, Math.round((pageHeight / imgHeightMm) * canvasHeight));
 
     // Create a temporary canvas for this page slice
     const pageCanvas = document.createElement('canvas');
