@@ -379,4 +379,3 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields }) => {
     </div>
   );
 };
-import React from 'react';
