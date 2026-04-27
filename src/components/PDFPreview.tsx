@@ -347,12 +347,8 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields }) => {
           backgroundColor: '#FAFAFA',
         }}
       >
-        <div style={{ fontSize: '11px', fontWeight: 700, color: '#0E0E0E', display: 'flex', alignItems: 'center', gap: '2px' }}>
-          <span>Software</span>
-          <span style={{ color: CORAL }}>One</span>
-        </div>
         <div style={{ fontSize: '8px', color: '#9CA3AF' }}>
-          SoftwareOne Confidential &nbsp;|&nbsp; {today}
+          Confidential &nbsp;|&nbsp; {today}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '8px' }}>
           <span style={{ color: '#9CA3AF', fontWeight: 600 }}>RAG Legend:</span>
