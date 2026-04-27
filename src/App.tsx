@@ -116,14 +116,57 @@ function App() {
               </p>
             </div>
 
-            {/* Sample file hint */}
-            <div className="mt-4 rounded-2xl border border-[var(--soft-gray)] bg-white p-4 text-xs text-gray-500">
-              <p className="font-semibold mb-1 text-[var(--near-black)]">Tip</p>
-              <p>
-                A <code className="rounded bg-[var(--light-silver)] px-1">sample.md</code> file
-                is included in the project root. Use it to test the import.
-              </p>
+            {/* Sample download */}
+            <div className="mt-4 rounded-2xl border border-[var(--soft-gray)] bg-white p-4">
+              <a
+                href={`${import.meta.env.BASE_URL}sample.md`}
+                download="sample.md"
+                className="flex items-center justify-center gap-2 w-full rounded-xl border border-[var(--near-black)] bg-white px-4 py-2.5 text-sm font-semibold text-[var(--near-black)] shadow-sm transition hover:bg-[var(--light-silver)] min-h-[44px]"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download Sample .md
+              </a>
             </div>
+
+            {/* Markdown format guide */}
+            <details className="mt-4 rounded-2xl border border-[var(--soft-gray)] bg-white">
+              <summary className="cursor-pointer px-4 py-3 text-xs font-semibold text-[var(--near-black)] select-none min-h-[44px] flex items-center">
+                📋 Markdown Format Guide
+              </summary>
+              <div className="border-t border-[var(--soft-gray)] px-4 py-3 text-xs text-gray-500 space-y-2">
+                <p>Use <code className="rounded bg-[var(--light-silver)] px-1">## Heading</code> for each field. Example:</p>
+                <pre className="rounded-lg bg-[var(--light-silver)] p-3 text-[10px] leading-relaxed overflow-x-auto whitespace-pre font-mono text-[var(--near-black)]">{`# Customer Name — Deal Title
+
+## Opportunity ID
+OPP-2024-000123
+
+## Company
+Acme Corporation
+
+## Industry
+Financial Services
+
+## TCV
+€ 4,200,000
+
+## Risks & Mitigation
+- Risk one | Mitigation one
+- Risk two | Mitigation two
+
+## Stakeholder (Customer)
+- Name | Role | Positive
+- Name | Role | Neutral
+
+## Commercials – TCV | CM1
+- Year 1 | € 1,600,000
+- Year 2 | € 1,400,000`}</pre>
+                <p className="text-gray-400">
+                  <strong>Tables:</strong> Use <code className="rounded bg-[var(--light-silver)] px-1">- col1 | col2 | col3</code> list items under the heading.
+                </p>
+              </div>
+            </details>
           </div>
 
           {/* Right column: form + preview tabs */}
