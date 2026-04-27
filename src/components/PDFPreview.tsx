@@ -6,10 +6,11 @@ interface PDFPreviewProps {
 }
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
-const HEADER_BG = '#3B78BB';
-const SECTION_BG = '#7BA3C5';
-const BORDER = '#B8CEE0';
-const LABEL_BG = '#EEF4FB';
+const HEADER_BG = '#0E0E0E';
+const SECTION_BG = '#1A1A1A';
+const BORDER = '#E5E5E5';
+const LABEL_BG = '#F5F5F5';
+const CORAL = '#F7675E';
 const PAGE_W = 794; // A4 portrait px @ 96 dpi (≈210mm)
 
 // ── Style helpers ─────────────────────────────────────────────────────────────
@@ -29,7 +30,7 @@ const cell = (extra?: React.CSSProperties): React.CSSProperties => ({
   border: `1px solid ${BORDER}`,
   padding: '3px 5px',
   fontSize: '9px',
-  color: '#1a1a2e',
+  color: '#0E0E0E',
   verticalAlign: 'top',
   ...extra,
 });
@@ -113,7 +114,7 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields }) => {
         style={{
           backgroundColor: HEADER_BG,
           color: '#fff',
-          padding: '8px 14px',
+          padding: '10px 14px',
           fontSize: '11px',
           fontWeight: 700,
           letterSpacing: '0.3px',
@@ -123,15 +124,15 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields }) => {
           flexWrap: 'wrap',
         }}
       >
-        <span style={{ fontSize: '10px', opacity: 0.85 }}>DEAL ON A PAGE</span>
-        <span style={{ opacity: 0.5 }}>|</span>
-        <span style={{ fontWeight: 800, fontSize: '12px' }}>
+        <span style={{ fontSize: '9px', opacity: 0.6, textTransform: 'uppercase', letterSpacing: '1px' }}>DEAL ON A PAGE</span>
+        <span style={{ opacity: 0.3 }}>|</span>
+        <span style={{ fontWeight: 800, fontSize: '12px', color: CORAL }}>
           {fields.customerName || '[Customer Name — Deal Description]'}
         </span>
-        <span style={{ opacity: 0.5 }}>|</span>
-        <span style={{ fontSize: '10px' }}>{fields.opportunityId || '[OPP-XXXX-XXXXX]'}</span>
-        <span style={{ opacity: 0.5 }}>|</span>
-        <span style={{ fontSize: '10px' }}>
+        <span style={{ opacity: 0.3 }}>|</span>
+        <span style={{ fontSize: '10px', opacity: 0.8 }}>{fields.opportunityId || '[OPP-XXXX-XXXXX]'}</span>
+        <span style={{ opacity: 0.3 }}>|</span>
+        <span style={{ fontSize: '10px', opacity: 0.8 }}>
           Business Lines:{' '}
           <span style={{ fontWeight: 600 }}>{fields.businessLines || '[insert business line]'}</span>
         </span>
@@ -343,18 +344,18 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields }) => {
           justifyContent: 'space-between',
           padding: '6px 14px',
           borderTop: `1px solid ${BORDER}`,
-          backgroundColor: '#fafbfc',
+          backgroundColor: '#FAFAFA',
         }}
       >
-        <div style={{ fontSize: '11px', fontWeight: 700, color: '#1a1a2e', display: 'flex', alignItems: 'center', gap: '2px' }}>
+        <div style={{ fontSize: '11px', fontWeight: 700, color: '#0E0E0E', display: 'flex', alignItems: 'center', gap: '2px' }}>
           <span>Software</span>
-          <span style={{ color: '#E94E1B' }}>One</span>
+          <span style={{ color: CORAL }}>One</span>
         </div>
-        <div style={{ fontSize: '8px', color: '#6b7280' }}>
+        <div style={{ fontSize: '8px', color: '#9CA3AF' }}>
           SoftwareOne Confidential &nbsp;|&nbsp; {today}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '8px' }}>
-          <span style={{ color: '#6b7280', fontWeight: 600 }}>RAG Legend:</span>
+          <span style={{ color: '#9CA3AF', fontWeight: 600 }}>RAG Legend:</span>
           {[
             { label: 'Positive', color: '#22C55E' },
             { label: 'Neutral', color: '#F97316' },

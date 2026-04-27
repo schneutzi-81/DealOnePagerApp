@@ -1,1 +1,34 @@
 @import "tailwindcss";
+
+:root {
+  --near-black: #0E0E0E;
+  --coral: #F7675E;
+  --sky-blue: #62C7EF;
+  --light-silver: #F5F5F5;
+  --soft-gray: #E5E5E5;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--near-black);
+}
+
+input,
+select,
+textarea {
+  font-size: 16px;
+  font-family: inherit;
+}

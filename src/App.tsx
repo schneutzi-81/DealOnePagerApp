@@ -54,25 +54,25 @@ function App() {
   }, [fields.customerName, fields.dealName]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-[var(--light-silver)]">
       {/* Top nav */}
-      <header className="bg-white shadow-sm">
-        <div className="mx-auto flex max-w-screen-xl items-center justify-between px-6 py-4">
+      <header className="sticky top-0 z-50 bg-white shadow-sm">
+        <div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white font-bold text-sm">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--near-black)] text-white font-bold text-sm">
               D1P
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900 leading-tight">
+              <h1 className="text-lg font-bold text-[var(--near-black)] leading-tight">
                 Deal One Pager
               </h1>
-              <p className="text-xs text-gray-500">RFP Review Builder</p>
+              <p className="text-xs text-gray-400">RFP Review Builder</p>
             </div>
           </div>
           <button
             onClick={handleExportPDF}
             disabled={isExporting}
-            className="flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:opacity-60"
+            className="flex items-center gap-2 rounded-xl bg-[var(--coral)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 active:opacity-80 disabled:opacity-50 min-h-[44px]"
           >
             {isExporting ? (
               <>
@@ -94,33 +94,33 @@ function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-screen-xl px-6 py-8">
+      <main className="mx-auto max-w-screen-xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
         {exportError && (
-          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="mb-6 rounded-xl border-l-4 border-[var(--coral)] bg-white px-4 py-3 text-sm text-[var(--near-black)] shadow-sm">
             ⚠ {exportError}
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-10">
           {/* Left column: uploader */}
           <div className="lg:col-span-1">
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-500">
+            <div className="rounded-2xl bg-white p-5 shadow-sm sm:p-6">
+              <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-400">
                 1 · Upload Markdown
               </h2>
               <MarkdownUploader onFileLoaded={handleFileLoaded} />
               <p className="mt-4 text-xs text-gray-400">
-                Upload a <code className="rounded bg-gray-100 px-1">.md</code> file
+                Upload a <code className="rounded bg-[var(--light-silver)] px-1">.md</code> file
                 to auto-fill the form. Headings map to fields; unmatched content
                 goes to Notes.
               </p>
             </div>
 
             {/* Sample file hint */}
-            <div className="mt-4 rounded-xl bg-blue-50 p-4 text-xs text-blue-700">
-              <p className="font-semibold mb-1">💡 Tip</p>
+            <div className="mt-4 rounded-2xl border border-[var(--soft-gray)] bg-white p-4 text-xs text-gray-500">
+              <p className="font-semibold mb-1 text-[var(--near-black)]">Tip</p>
               <p>
-                A <code className="rounded bg-blue-100 px-1">sample.md</code> file
+                A <code className="rounded bg-[var(--light-silver)] px-1">sample.md</code> file
                 is included in the project root. Use it to test the import.
               </p>
             </div>
@@ -128,17 +128,17 @@ function App() {
 
           {/* Right column: form + preview tabs */}
           <div className="lg:col-span-2">
-            <div className="rounded-xl bg-white shadow-sm">
+            <div className="rounded-2xl bg-white shadow-sm">
               {/* Tabs */}
-              <div className="flex border-b border-gray-200 px-6">
+              <div className="flex border-b border-[var(--soft-gray)] px-4 sm:px-6">
                 {(['edit', 'preview'] as Tab[]).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`mr-4 py-4 text-sm font-semibold capitalize transition border-b-2 ${
+                    className={`flex-1 sm:flex-none sm:mr-4 py-4 text-sm font-semibold capitalize transition border-b-2 min-h-[44px] ${
                       activeTab === tab
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                        ? 'border-[var(--coral)] text-[var(--near-black)]'
+                        : 'border-transparent text-gray-400 hover:text-gray-600'
                     }`}
                   >
                     {tab === 'edit' ? '2 · Edit Fields' : '3 · Preview'}
@@ -146,10 +146,10 @@ function App() {
                 ))}
               </div>
 
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {activeTab === 'edit' ? (
                   <>
-                    <p className="mb-5 text-sm text-gray-500">
+                    <p className="mb-5 text-sm text-gray-400">
                       Review and edit the auto-filled fields below. All fields
                       are editable.
                     </p>
@@ -161,14 +161,15 @@ function App() {
                   </>
                 ) : (
                   <div>
-                    <p className="mb-5 text-sm text-gray-500">
+                    <p className="mb-5 text-sm text-gray-400">
                       This is how your one-pager will look in the PDF. Click
                       &quot;Export PDF&quot; to download.
                     </p>
-                    <div className="overflow-auto rounded-lg border border-gray-200 bg-gray-50 p-4">
-                      <div style={{ maxWidth: '100%', overflow: 'auto' }}>
-                        <PDFPreview fields={fields} />
-                      </div>
+                    <p className="mb-3 text-xs text-gray-400 sm:hidden">
+                      ← Scroll horizontally to see full preview →
+                    </p>
+                    <div className="overflow-x-auto rounded-xl border border-[var(--soft-gray)] bg-[var(--light-silver)] p-4 [-webkit-overflow-scrolling:touch]">
+                      <PDFPreview fields={fields} />
                     </div>
                   </div>
                 )}

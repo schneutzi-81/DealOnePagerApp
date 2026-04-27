@@ -9,11 +9,11 @@ interface DealFormProps {
 
 // ── Section wrapper ──────────────────────────────────────────────────────────
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
-  <div className="mb-6">
-    <div className="mb-3 rounded-t-lg bg-blue-700 px-3 py-1.5">
+  <div className="mb-5">
+    <div className="rounded-t-xl bg-[var(--near-black)] px-4 py-2">
       <h3 className="text-xs font-bold uppercase tracking-wider text-white">{title}</h3>
     </div>
-    <div className="rounded-b-lg border border-gray-200 bg-white p-4">{children}</div>
+    <div className="rounded-b-xl border border-[var(--soft-gray)] bg-white p-4">{children}</div>
   </div>
 );
 
@@ -25,14 +25,14 @@ const Field: React.FC<{
   type?: string;
   placeholder?: string;
 }> = ({ label, value, onChange, type = 'text', placeholder }) => (
-  <div className="grid grid-cols-5 items-center gap-2">
-    <label className="col-span-2 text-xs font-semibold text-gray-500">{label}</label>
+  <div className="grid grid-cols-1 sm:grid-cols-5 items-center gap-1 sm:gap-2">
+    <label className="sm:col-span-2 text-xs font-semibold text-gray-400">{label}</label>
     <input
       type={type}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder ?? label}
-      className="col-span-3 rounded border border-gray-300 px-2 py-1.5 text-sm text-gray-800 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200"
+      className="sm:col-span-3 rounded-lg border border-[var(--soft-gray)] px-3 py-2 text-sm text-[var(--near-black)] outline-none focus:border-[var(--coral)] focus:ring-1 focus:ring-[var(--coral)]/20 min-h-[44px]"
     />
   </div>
 );
@@ -46,14 +46,14 @@ const TextArea: React.FC<{
   helper?: string;
 }> = ({ label, value, onChange, rows = 4, helper }) => (
   <div>
-    <label className="mb-1 block text-xs font-semibold text-gray-500">{label}</label>
+    <label className="mb-1 block text-xs font-semibold text-gray-400">{label}</label>
     {helper && <p className="mb-1 text-xs text-gray-400">{helper}</p>}
     <textarea
       value={value}
       onChange={(e) => onChange(e.target.value)}
       rows={rows}
       placeholder={label}
-      className="w-full rounded border border-gray-300 px-2 py-1.5 text-sm text-gray-800 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-200"
+      className="w-full rounded-lg border border-[var(--soft-gray)] px-3 py-2 text-sm text-[var(--near-black)] outline-none focus:border-[var(--coral)] focus:ring-1 focus:ring-[var(--coral)]/20"
     />
   </div>
 );
@@ -93,7 +93,7 @@ const TableEditor: React.FC<TableEditorProps> = ({
     );
 
   return (
-    <div>
+    <div className="overflow-x-auto [-webkit-overflow-scrolling:touch]">
       <table className="w-full border-collapse text-xs">
         <thead>
           <tr>
@@ -101,24 +101,24 @@ const TableEditor: React.FC<TableEditorProps> = ({
               <th
                 key={i}
                 style={{ width: cellWidths?.[i] }}
-                className="border border-gray-300 bg-gray-100 px-2 py-1 text-left font-semibold text-gray-600"
+                className="border border-[var(--soft-gray)] bg-[var(--light-silver)] px-2 py-1.5 text-left font-semibold text-gray-500"
               >
                 {h}
               </th>
             ))}
-            <th className="w-6 border border-gray-300 bg-gray-100" />
+            <th className="w-6 border border-[var(--soft-gray)] bg-[var(--light-silver)]" />
           </tr>
         </thead>
         <tbody>
           {rows.map((row, ri) => (
             <tr key={ri}>
               {headers.map((_, ci) => (
-                <td key={ci} className="border border-gray-300 p-0">
+                <td key={ci} className="border border-[var(--soft-gray)] p-0">
                   {dropdownCols && dropdownCols[ci] ? (
                     <select
                       value={row.cols[ci] ?? ''}
                       onChange={(e) => updateCell(ri, ci, e.target.value)}
-                      className="w-full px-2 py-1 text-sm outline-none focus:bg-blue-50 bg-white"
+                      className="w-full px-2 py-2 text-sm outline-none focus:bg-[var(--light-silver)] bg-white min-h-[44px]"
                     >
                       <option value="">— Select —</option>
                       {dropdownCols[ci].map((opt) => (
@@ -130,16 +130,16 @@ const TableEditor: React.FC<TableEditorProps> = ({
                       type="text"
                       value={row.cols[ci] ?? ''}
                       onChange={(e) => updateCell(ri, ci, e.target.value)}
-                      className="w-full px-2 py-1 text-sm outline-none focus:bg-blue-50"
+                      className="w-full px-2 py-2 text-sm outline-none focus:bg-[var(--light-silver)] min-h-[44px]"
                     />
                   )}
                 </td>
               ))}
-              <td className="border border-gray-300 text-center">
+              <td className="border border-[var(--soft-gray)] text-center">
                 <button
                   onClick={() => removeRow(ri)}
                   disabled={rows.length <= minRows}
-                  className="px-1 text-red-300 hover:text-red-500 disabled:opacity-30"
+                  className="px-1 text-gray-300 hover:text-[var(--coral)] disabled:opacity-30 min-h-[44px]"
                   title="Remove row"
                 >
                   ✕
@@ -151,7 +151,7 @@ const TableEditor: React.FC<TableEditorProps> = ({
       </table>
       <button
         onClick={addRow}
-        className="mt-1.5 text-xs font-medium text-blue-600 hover:text-blue-800"
+        className="mt-2 text-xs font-medium text-[var(--coral)] hover:opacity-70 min-h-[44px]"
       >
         + Add row
       </button>
@@ -172,7 +172,7 @@ export const DealForm: React.FC<DealFormProps> = ({ fields, onChange, onReset })
       onChange(key, rows);
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1 sm:space-y-2">
       {/* ── Header ── */}
       <Section title="Header">
         <div className="space-y-2">
@@ -331,10 +331,10 @@ export const DealForm: React.FC<DealFormProps> = ({ fields, onChange, onReset })
       </Section>
 
       {/* ── Reset ── */}
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-end pt-4">
         <button
           onClick={onReset}
-          className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-600 shadow-sm transition hover:bg-gray-50"
+          className="rounded-xl border border-[var(--near-black)] bg-white px-5 py-2.5 text-sm font-semibold text-[var(--near-black)] shadow-sm transition hover:bg-[var(--light-silver)] min-h-[44px]"
         >
           Reset All Fields
         </button>

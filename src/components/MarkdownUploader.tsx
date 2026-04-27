@@ -57,14 +57,14 @@ export const MarkdownUploader: React.FC<MarkdownUploaderProps> = ({
         setIsDragging(true);
       }}
       onDragLeave={() => setIsDragging(false)}
-      className={`relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-10 transition-colors ${
+      className={`relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 sm:p-10 transition-colors ${
         isDragging
-          ? 'border-blue-500 bg-blue-50'
-          : 'border-gray-300 bg-gray-50 hover:border-blue-400 hover:bg-blue-50/40'
+          ? 'border-[var(--coral)] bg-[var(--light-silver)]'
+          : 'border-[var(--soft-gray)] bg-white hover:border-gray-400 hover:bg-[var(--light-silver)]'
       }`}
     >
       <svg
-        className="mb-4 h-12 w-12 text-blue-400"
+        className="mb-4 h-8 w-8 sm:h-12 sm:w-12 text-gray-300"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -77,15 +77,15 @@ export const MarkdownUploader: React.FC<MarkdownUploaderProps> = ({
         />
       </svg>
 
-      <p className="mb-1 text-lg font-semibold text-gray-700">
+      <p className="mb-1 text-lg font-semibold text-[var(--near-black)]">
         {isDragging ? 'Drop your file here' : 'Upload Markdown File'}
       </p>
-      <p className="mb-4 text-sm text-gray-500">
-        Drag &amp; drop a <code className="rounded bg-gray-200 px-1">.md</code>{' '}
+      <p className="mb-4 text-sm text-gray-400">
+        Drag &amp; drop a <code className="rounded bg-[var(--light-silver)] px-1">.md</code>{' '}
         file here, or click to browse
       </p>
 
-      <label className="cursor-pointer rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
+      <label className="cursor-pointer rounded-xl bg-[var(--coral)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 active:opacity-80 w-full sm:w-auto text-center min-h-[44px] flex items-center justify-center">
         Browse Files
         <input
           type="file"
@@ -96,11 +96,11 @@ export const MarkdownUploader: React.FC<MarkdownUploaderProps> = ({
       </label>
 
       {fileName && (
-        <p className="mt-4 text-sm text-green-600">
-          ✓ Loaded: <span className="font-medium">{fileName}</span>
+        <p className="mt-4 text-sm text-[var(--near-black)]">
+          <span className="text-[var(--coral)]">✓</span> Loaded: <span className="font-medium">{fileName}</span>
         </p>
       )}
-      {error && <p className="mt-4 text-sm text-red-600">⚠ {error}</p>}
+      {error && <p className="mt-4 text-sm text-[var(--coral)]">⚠ {error}</p>}
     </div>
   );
 };
