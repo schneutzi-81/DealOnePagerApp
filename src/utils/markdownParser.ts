@@ -85,6 +85,14 @@ export function parseMarkdownToFields(markdown: string): DealOnePagerFields {
   for (const token of tokens) {
     if (token.type === 'heading') {
       flush();
+
+      // H1 is always the deal title / customer name
+      if ((token as { depth?: number }).depth === 1 && !fields.customerName) {
+        fields.customerName = token.text;
+        currentField = null;
+        continue;
+      }
+
       currentField = matchHeading(token.text);
 
       // Check for inline value after colon: "## Deal Name: Acme Alpha"
