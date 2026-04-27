@@ -65,6 +65,8 @@ interface TableEditorProps {
   onChange: (rows: TableRow[]) => void;
   minRows?: number;
   cellWidths?: string[];
+  /** Map column index → list of dropdown options. Columns not listed use a plain text input. */
+  dropdownCols?: Record<number, string[]>;
 }
 
 const TableEditor: React.FC<TableEditorProps> = ({
@@ -73,6 +75,7 @@ const TableEditor: React.FC<TableEditorProps> = ({
   onChange,
   minRows = 2,
   cellWidths,
+  dropdownCols,
 }) => {
   const addRow = () =>
     onChange([...rows, { cols: Array(headers.length).fill('') }]);
@@ -111,12 +114,25 @@ const TableEditor: React.FC<TableEditorProps> = ({
             <tr key={ri}>
               {headers.map((_, ci) => (
                 <td key={ci} className="border border-gray-300 p-0">
-                  <input
-                    type="text"
-                    value={row.cols[ci] ?? ''}
-                    onChange={(e) => updateCell(ri, ci, e.target.value)}
-                    className="w-full px-2 py-1 text-sm outline-none focus:bg-blue-50"
-                  />
+                  {dropdownCols && dropdownCols[ci] ? (
+                    <select
+                      value={row.cols[ci] ?? ''}
+                      onChange={(e) => updateCell(ri, ci, e.target.value)}
+                      className="w-full px-2 py-1 text-sm outline-none focus:bg-blue-50 bg-white"
+                    >
+                      <option value="">— Select —</option>
+                      {dropdownCols[ci].map((opt) => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      value={row.cols[ci] ?? ''}
+                      onChange={(e) => updateCell(ri, ci, e.target.value)}
+                      className="w-full px-2 py-1 text-sm outline-none focus:bg-blue-50"
+                    />
+                  )}
                 </td>
               ))}
               <td className="border border-gray-300 text-center">
@@ -269,6 +285,7 @@ export const DealForm: React.FC<DealFormProps> = ({ fields, onChange, onReset })
           onChange={tbl('stakeholders')}
           minRows={2}
           cellWidths={['40%', '40%', '20%']}
+          dropdownCols={{ 2: ['Positive', 'Neutral', 'Issue'] }}
         />
       </Section>
 
