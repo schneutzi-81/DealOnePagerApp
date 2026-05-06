@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+ <Worksheet ss:Name="Azure_Baseline">
+  <Table>
+   <Row><Cell><Data ss:Type="String">Service</Data></Cell><Cell><Data ss:Type="String">MonthlyCostEUR</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Azure OpenAI GPT-4o</Data></Cell><Cell><Data ss:Type="Number">128.16</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Azure AI Search</Data></Cell><Cell><Data ss:Type="Number">207.84</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Application Gateway WAF</Data></Cell><Cell><Data ss:Type="Number">298.40</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Container Apps</Data></Cell><Cell><Data ss:Type="Number">0.95</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">PostgreSQL Vector DB</Data></Cell><Cell><Data ss:Type="Number">262.85</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">PostgreSQL Config DB</Data></Cell><Cell><Data ss:Type="Number">262.85</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Storage Production</Data></Cell><Cell><Data ss:Type="Number">17.56</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Storage Admin</Data></Cell><Cell><Data ss:Type="Number">17.56</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Container Registry</Data></Cell><Cell><Data ss:Type="Number">16.95</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Azure Monitor</Data></Cell><Cell><Data ss:Type="Number">63.34</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Embedding Model</Data></Cell><Cell><Data ss:Type="Number">7.29</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Total Monthly</Data></Cell><Cell ss:Formula="=SUM(R2C2:R12C2)"><Data ss:Type="Number">1283.75</Data></Cell></Row>
+  </Table>
+ </Worksheet>
+ <Worksheet ss:Name="Assumptions">
+  <Table>
+   <Row><Cell><Data ss:Type="String">Parameter</Data></Cell><Cell><Data ss:Type="String">Value</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Loaded hourly rate EUR</Data></Cell><Cell><Data ss:Type="Number">65</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">MCP monthly run cost EUR</Data></Cell><Cell><Data ss:Type="Number">6000</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">One-time implementation EUR</Data></Cell><Cell><Data ss:Type="Number">85000</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">One-time MCP setup EUR</Data></Cell><Cell><Data ss:Type="Number">45000</Data></Cell></Row>
+  </Table>
+ </Worksheet>
+ <Worksheet ss:Name="UseCase_ROI">
+  <Table>
+   <Row><Cell><Data ss:Type="String">UseCase</Data></Cell><Cell><Data ss:Type="String">MonthlyTasks</Data></Cell><Cell><Data ss:Type="String">BaselineMin</Data></Cell><Cell><Data ss:Type="String">AIMin</Data></Cell><Cell><Data ss:Type="String">ValueUplift</Data></Cell><Cell><Data ss:Type="String">NetBenefitMonthly</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Knowledge Assistant</Data></Cell><Cell><Data ss:Type="Number">5000</Data></Cell><Cell><Data ss:Type="Number">12</Data></Cell><Cell><Data ss:Type="Number">5</Data></Cell><Cell><Data ss:Type="Number">2000</Data></Cell><Cell ss:Formula="=((R2C2*R2C3/60*Assumptions!R2C2)-(R2C2*R2C4/60*Assumptions!R2C2))+R2C5-(Azure_Baseline!R13C2/3)-(Assumptions!R3C2/2)"><Data ss:Type="Number">0</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Drafting Assistant</Data></Cell><Cell><Data ss:Type="Number">2400</Data></Cell><Cell><Data ss:Type="Number">30</Data></Cell><Cell><Data ss:Type="Number">16</Data></Cell><Cell><Data ss:Type="Number">3000</Data></Cell><Cell ss:Formula="=((R3C2*R3C3/60*Assumptions!R2C2)-(R3C2*R3C4/60*Assumptions!R2C2))+R3C5-(Azure_Baseline!R13C2/3)"><Data ss:Type="Number">0</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Support Copilot</Data></Cell><Cell><Data ss:Type="Number">3500</Data></Cell><Cell><Data ss:Type="Number">18</Data></Cell><Cell><Data ss:Type="Number">9</Data></Cell><Cell><Data ss:Type="Number">4000</Data></Cell><Cell ss:Formula="=((R4C2*R4C3/60*Assumptions!R2C2)-(R4C2*R4C4/60*Assumptions!R2C2))+R4C5-(Azure_Baseline!R13C2/3)-(Assumptions!R3C2/2)"><Data ss:Type="Number">0</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Total Monthly Net Benefit</Data></Cell><Cell/><Cell/><Cell/><Cell/><Cell ss:Formula="=SUM(R2C6:R4C6)"><Data ss:Type="Number">0</Data></Cell></Row>
+  </Table>
+ </Worksheet>
+ <Worksheet ss:Name="Portfolio_Summary">
+  <Table>
+   <Row><Cell><Data ss:Type="String">Metric</Data></Cell><Cell><Data ss:Type="String">Value</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Annual Net Benefit before one-time</Data></Cell><Cell ss:Formula="=UseCase_ROI!R5C6*12"><Data ss:Type="Number">0</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">One-time costs</Data></Cell><Cell ss:Formula="=Assumptions!R4C2+Assumptions!R5C2"><Data ss:Type="Number">130000</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Annual Net Benefit after one-time</Data></Cell><Cell ss:Formula="=R2C2-R3C2"><Data ss:Type="Number">0</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Annual Cost Base</Data></Cell><Cell ss:Formula="=(Azure_Baseline!R13C2*12)+(Assumptions!R3C2*12)"><Data ss:Type="Number">0</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">ROI %</Data></Cell><Cell ss:Formula="=IF(R5C2=0,0,R4C2/R5C2)"><Data ss:Type="Number">0</Data></Cell></Row>
+   <Row><Cell><Data ss:Type="String">Payback Months</Data></Cell><Cell ss:Formula="=IF(UseCase_ROI!R5C6&lt;=0,0,R3C2/UseCase_ROI!R5C6)"><Data ss:Type="Number">0</Data></Cell></Row>
+  </Table>
+ </Worksheet>
+</Workbook>
