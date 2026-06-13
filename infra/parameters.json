@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": {
+      "value": "dealonepager"
+    },
+    "tenantId": {
+      "value": "c2e79ffa-6f13-426f-9ba8-46511990ce1b"
+    },
+    "clientId": {
+      "value": "f262de50-08c3-4ef4-839a-31ee58c2cab2"
+    },
+    "openAiDeployment": {
+      "value": "gpt-4o"
+    }
+  }
+}

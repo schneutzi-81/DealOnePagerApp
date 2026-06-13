@@ -2,19 +2,28 @@ import { useState, useCallback } from 'react';
 import { MarkdownUploader } from './components/MarkdownUploader';
 import { DealForm } from './components/DealForm';
 import { PDFPreview } from './components/PDFPreview';
-import GitHubServices from './components/GitHubServices';
+import { ApprovalDashboard } from './components/ApprovalDashboard';
+import { AIUpload } from './components/AIUpload';
 import { parseMarkdownToFields } from './utils/markdownParser';
 import { exportToPDF } from './utils/pdfExport';
+import { useAuth } from './hooks/useAuth';
+import { useDeals, type DealRecord } from './hooks/useDeals';
 import type { DealOnePagerFields } from './types';
 import { DEFAULT_FIELDS } from './types';
 
-type Tab = 'edit' | 'preview' | 'github';
+type Tab = 'edit' | 'preview' | 'approvals';
 
 function App() {
+  const { isAuthenticated, isLoading: authLoading, login, logout, userName } = useAuth();
+  const { saveDeal, submitForApproval, extractWithAI, error: dealsError } = useDeals();
+
   const [fields, setFields] = useState<DealOnePagerFields>({ ...DEFAULT_FIELDS });
   const [activeTab, setActiveTab] = useState<Tab>('edit');
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [currentDealId, setCurrentDealId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFileLoaded = useCallback((content: string) => {
     const parsed = parseMarkdownToFields(content);
@@ -32,13 +41,13 @@ function App() {
   const handleReset = useCallback(() => {
     if (window.confirm('Reset all fields to empty? This cannot be undone.')) {
       setFields({ ...DEFAULT_FIELDS });
+      setCurrentDealId(null);
     }
   }, []);
 
   const handleExportPDF = useCallback(async () => {
     setActiveTab('preview');
     setExportError(null);
-    // Wait one frame so React paints the visible preview before capture
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     try {
       setIsExporting(true);
@@ -53,6 +62,76 @@ function App() {
       setIsExporting(false);
     }
   }, [fields.customerName, fields.dealName]);
+
+  const handleSave = useCallback(async () => {
+    setIsSaving(true);
+    const result = await saveDeal(fields, currentDealId || undefined);
+    if (result) {
+      setCurrentDealId(result.id);
+    }
+    setIsSaving(false);
+  }, [fields, currentDealId, saveDeal]);
+
+  const handleSubmitForApproval = useCallback(async () => {
+    if (!currentDealId) {
+      // Save first
+      const result = await saveDeal(fields);
+      if (!result) return;
+      setCurrentDealId(result.id);
+      setIsSubmitting(true);
+      await submitForApproval(result.id);
+      setIsSubmitting(false);
+    } else {
+      setIsSubmitting(true);
+      await saveDeal(fields, currentDealId);
+      await submitForApproval(currentDealId);
+      setIsSubmitting(false);
+    }
+  }, [currentDealId, fields, saveDeal, submitForApproval]);
+
+  const handleEditDeal = useCallback((deal: DealRecord) => {
+    setFields(deal.fields as unknown as DealOnePagerFields);
+    setCurrentDealId(deal.id);
+    setActiveTab('edit');
+  }, []);
+
+  const handleAISuggestions = useCallback((suggestions: Partial<DealOnePagerFields>) => {
+    setFields(prev => ({ ...prev, ...suggestions } as DealOnePagerFields));
+    setActiveTab('edit');
+  }, []);
+
+  // Auth loading state
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--light-silver)]">
+        <div className="text-center">
+          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[var(--coral)] border-t-transparent" />
+          <p className="mt-4 text-sm text-gray-500">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Login screen
+  if (!isAuthenticated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--light-silver)]">
+        <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-[var(--near-black)] text-white font-bold text-xl">
+            D1P
+          </div>
+          <h1 className="mt-4 text-xl font-bold text-[var(--near-black)]">Deal One Pager</h1>
+          <p className="mt-2 text-sm text-gray-500">Sign in with your corporate account to continue</p>
+          <button
+            onClick={login}
+            className="mt-6 w-full rounded-xl bg-[var(--coral)] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
+          >
+            Sign in with Microsoft
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[var(--light-silver)]">
@@ -70,41 +149,56 @@ function App() {
               <p className="text-xs text-gray-400">RFP Review Builder</p>
             </div>
           </div>
-          <button
-            onClick={handleExportPDF}
-            disabled={isExporting}
-            className="flex items-center gap-2 rounded-xl bg-[var(--coral)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 active:opacity-80 disabled:opacity-50 min-h-[44px]"
-          >
-            {isExporting ? (
-              <>
-                <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                </svg>
-                Exporting…
-              </>
-            ) : (
-              <>
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Export PDF
-              </>
-            )}
-          </button>
+
+          <div className="flex items-center gap-3">
+            {/* Save button */}
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="hidden sm:flex items-center gap-2 rounded-xl border border-[var(--soft-gray)] bg-white px-4 py-2.5 text-sm font-semibold text-[var(--near-black)] shadow-sm transition hover:bg-[var(--light-silver)] disabled:opacity-50 min-h-[44px]"
+            >
+              {isSaving ? 'Saving…' : '💾 Save Draft'}
+            </button>
+
+            {/* Submit for approval */}
+            <button
+              onClick={handleSubmitForApproval}
+              disabled={isSubmitting}
+              className="hidden sm:flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 disabled:opacity-50 min-h-[44px]"
+            >
+              {isSubmitting ? 'Submitting…' : '📤 Submit for Approval'}
+            </button>
+
+            {/* Export PDF */}
+            <button
+              onClick={handleExportPDF}
+              disabled={isExporting}
+              className="flex items-center gap-2 rounded-xl bg-[var(--coral)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 active:opacity-80 disabled:opacity-50 min-h-[44px]"
+            >
+              {isExporting ? 'Exporting…' : 'Export PDF'}
+            </button>
+
+            {/* User menu */}
+            <div className="flex items-center gap-2 rounded-xl bg-[var(--light-silver)] px-3 py-2">
+              <span className="text-xs font-medium text-gray-600 hidden sm:inline">{userName}</span>
+              <button onClick={logout} className="text-xs text-gray-400 hover:text-[var(--coral)]">
+                Sign out
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 
       <main className="px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10">
-        {exportError && (
+        {(exportError || dealsError) && (
           <div className="mb-6 rounded-xl border-l-4 border-[var(--coral)] bg-white px-4 py-3 text-sm text-[var(--near-black)] shadow-sm">
-            ⚠ {exportError}
+            ⚠ {exportError || dealsError}
           </div>
         )}
 
         <div className={`grid grid-cols-1 gap-6 ${activeTab === 'edit' ? 'lg:grid-cols-[300px_1fr] lg:gap-8' : ''}`}>
-          {/* Left column: uploader (hidden on preview and github) */}
-          <div className={activeTab === 'preview' || activeTab === 'github' ? 'hidden' : ''}>
+          {/* Left column: uploader (hidden on preview/approvals) */}
+          <div className={activeTab !== 'edit' ? 'hidden' : ''}>
             <div className="rounded-2xl bg-white p-5 shadow-sm sm:p-6">
               <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-400">
                 1 · Upload Markdown
@@ -115,6 +209,14 @@ function App() {
                 to auto-fill the form. Headings map to fields; unmatched content
                 goes to Notes.
               </p>
+            </div>
+
+            {/* AI Upload */}
+            <div className="mt-4 rounded-2xl bg-white p-5 shadow-sm sm:p-6">
+              <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-400">
+                🤖 AI Extract
+              </h2>
+              <AIUpload onAcceptSuggestions={handleAISuggestions} extractWithAI={extractWithAI} />
             </div>
 
             {/* Sample download */}
@@ -130,52 +232,14 @@ function App() {
                 Download Sample .md
               </a>
             </div>
-
-            {/* Markdown format guide */}
-            <details className="mt-4 rounded-2xl border border-[var(--soft-gray)] bg-white">
-              <summary className="cursor-pointer px-4 py-3 text-xs font-semibold text-[var(--near-black)] select-none min-h-[44px] flex items-center">
-                📋 Markdown Format Guide
-              </summary>
-              <div className="border-t border-[var(--soft-gray)] px-4 py-3 text-xs text-gray-500 space-y-2">
-                <p>Use <code className="rounded bg-[var(--light-silver)] px-1">## Heading</code> for each field. Example:</p>
-                <pre className="rounded-lg bg-[var(--light-silver)] p-3 text-[10px] leading-relaxed overflow-x-auto whitespace-pre font-mono text-[var(--near-black)]">{`# Customer Name — Deal Title
-
-## Opportunity ID
-OPP-2024-000123
-
-## Company
-Acme Corporation
-
-## Industry
-Financial Services
-
-## TCV
-€ 4,200,000
-
-## Risks & Mitigation
-- Risk one | Mitigation one
-- Risk two | Mitigation two
-
-## Stakeholder (Customer)
-- Name | Role | Positive
-- Name | Role | Neutral
-
-## Commercials – TCV | CM1
-- Year 1 | € 1,600,000
-- Year 2 | € 1,400,000`}</pre>
-                <p className="text-gray-400">
-                  <strong>Tables:</strong> Use <code className="rounded bg-[var(--light-silver)] px-1">- col1 | col2 | col3</code> list items under the heading.
-                </p>
-              </div>
-            </details>
           </div>
 
-          {/* Right column: form + preview tabs */}
+          {/* Right column: form + preview + approvals */}
           <div>
             <div className="rounded-2xl bg-white shadow-sm">
               {/* Tabs */}
               <div className="flex border-b border-[var(--soft-gray)] px-4 sm:px-6">
-                {(['edit', 'preview', 'github'] as Tab[]).map((tab) => (
+                {(['edit', 'preview', 'approvals'] as Tab[]).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -185,17 +249,16 @@ Financial Services
                         : 'border-transparent text-gray-400 hover:text-gray-600'
                     }`}
                   >
-                    {tab === 'edit' ? '2 · Edit Fields' : tab === 'preview' ? '3 · Preview' : 'GitHub Services'}
+                    {tab === 'edit' ? '✏️ Edit' : tab === 'preview' ? '👁️ Preview' : '📋 Approvals'}
                   </button>
                 ))}
               </div>
 
-              <div className={activeTab !== 'github' ? 'p-4 sm:p-6' : ''}>
+              <div className="p-4 sm:p-6">
                 {/* Edit tab */}
                 <div className={activeTab === 'edit' ? '' : 'hidden'}>
                   <p className="mb-5 text-sm text-gray-400">
-                    Review and edit the auto-filled fields below. All fields
-                    are editable.
+                    Review and edit the fields below. All fields are editable. Save as draft or submit for approval.
                   </p>
                   <DealForm
                     fields={fields}
@@ -218,15 +281,17 @@ Financial Services
                   </div>
                 </div>
 
-                {/* GitHub Services tab */}
-                {activeTab === 'github' && <GitHubServices />}
+                {/* Approvals tab */}
+                {activeTab === 'approvals' && (
+                  <ApprovalDashboard onEditDeal={handleEditDeal} />
+                )}
               </div>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Off-screen PDF capture target — always has layout for html2canvas */}
+      {/* Off-screen PDF capture target */}
       <div
         aria-hidden="true"
         style={{ position: 'fixed', left: '-9999px', top: 0, zIndex: -1 }}
