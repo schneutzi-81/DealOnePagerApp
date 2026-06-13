@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "./styles/github-services.css";
 
 :root {
   --near-black: #0E0E0E;

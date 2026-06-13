@@ -2,13 +2,12 @@ import { useState, useCallback } from 'react';
 import { MarkdownUploader } from './components/MarkdownUploader';
 import { DealForm } from './components/DealForm';
 import { PDFPreview } from './components/PDFPreview';
-import GitHubServices from './components/GitHubServices';
 import { parseMarkdownToFields } from './utils/markdownParser';
 import { exportToPDF } from './utils/pdfExport';
 import type { DealOnePagerFields } from './types';
 import { DEFAULT_FIELDS } from './types';
 
-type Tab = 'edit' | 'preview' | 'github';
+type Tab = 'edit' | 'preview';
 
 function App() {
   const [fields, setFields] = useState<DealOnePagerFields>({ ...DEFAULT_FIELDS });
@@ -103,8 +102,8 @@ function App() {
         )}
 
         <div className={`grid grid-cols-1 gap-6 ${activeTab === 'edit' ? 'lg:grid-cols-[300px_1fr] lg:gap-8' : ''}`}>
-          {/* Left column: uploader (hidden on preview and github) */}
-          <div className={activeTab === 'preview' || activeTab === 'github' ? 'hidden' : ''}>
+          {/* Left column: uploader (hidden on preview) */}
+          <div className={activeTab === 'preview' ? 'hidden' : ''}>
             <div className="rounded-2xl bg-white p-5 shadow-sm sm:p-6">
               <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-400">
                 1 · Upload Markdown
@@ -175,7 +174,7 @@ Financial Services
             <div className="rounded-2xl bg-white shadow-sm">
               {/* Tabs */}
               <div className="flex border-b border-[var(--soft-gray)] px-4 sm:px-6">
-                {(['edit', 'preview', 'github'] as Tab[]).map((tab) => (
+                {(['edit', 'preview'] as Tab[]).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -185,12 +184,12 @@ Financial Services
                         : 'border-transparent text-gray-400 hover:text-gray-600'
                     }`}
                   >
-                    {tab === 'edit' ? '2 · Edit Fields' : tab === 'preview' ? '3 · Preview' : 'GitHub Services'}
+                    {tab === 'edit' ? '2 · Edit Fields' : '3 · Preview'}
                   </button>
                 ))}
               </div>
 
-              <div className={activeTab !== 'github' ? 'p-4 sm:p-6' : ''}>
+              <div className="p-4 sm:p-6">
                 {/* Edit tab */}
                 <div className={activeTab === 'edit' ? '' : 'hidden'}>
                   <p className="mb-5 text-sm text-gray-400">
@@ -217,9 +216,6 @@ Financial Services
                     <PDFPreview fields={fields} />
                   </div>
                 </div>
-
-                {/* GitHub Services tab */}
-                {activeTab === 'github' && <GitHubServices />}
               </div>
             </div>
           </div>
