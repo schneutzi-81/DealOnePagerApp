@@ -14,7 +14,6 @@
     "@azure/storage-blob": "^12.26.0",
     "@azure/data-tables": "^13.3.0",
     "@azure/ai-form-recognizer": "^5.0.0",
-    "@azure/openai": "^2.1.0",
     "express": "^5.1.0",
     "cors": "^2.8.5",
     "helmet": "^8.0.0",

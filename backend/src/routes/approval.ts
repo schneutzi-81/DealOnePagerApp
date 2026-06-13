@@ -7,7 +7,7 @@ export const approvalRouter = Router();
 
 // Submit a deal for approval (owner only)
 approvalRouter.post('/:id/submit', async (req: Request, res: Response) => {
-  const deal = await storageService.getDeal(req.params.id, req.user!.oid);
+  const deal = await storageService.getDeal(req.params.id as string, req.user!.oid);
   if (!deal) {
     res.status(404).json({ error: 'Deal not found' });
     return;
@@ -37,7 +37,7 @@ approvalRouter.get('/pending', async (req: Request, res: Response) => {
 
 // Approve or reject a deal (approver action)
 approvalRouter.post('/:id/approve', async (req: Request, res: Response) => {
-  const deal = await storageService.getDealById(req.params.id);
+  const deal = await storageService.getDealById(req.params.id as string);
   if (!deal) {
     res.status(404).json({ error: 'Deal not found' });
     return;

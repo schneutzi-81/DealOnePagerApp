@@ -67,20 +67,18 @@ export class AIService {
     }
 
     // For PDFs, Word docs, images — use Azure Document Intelligence
+    const { DocumentAnalysisClient } = await import('@azure/ai-form-recognizer');
+
     const credential = AI_KEY
       ? new AzureKeyCredential(AI_KEY)
       : new DefaultAzureCredential();
 
-    const { DocumentAnalysisClient } = await import('@azure/ai-form-recognizer');
-    const client = new DocumentAnalysisClient(AI_ENDPOINT, credential as AzureKeyCredential);
+    const client = new DocumentAnalysisClient(
+      AI_ENDPOINT,
+      credential as unknown as AzureKeyCredential
+    );
 
-    const poller = await client.beginAnalyzeDocument('prebuilt-read', fileBuffer, {
-      contentType: mimeType as
-        | 'application/pdf'
-        | 'image/png'
-        | 'image/jpeg'
-        | 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    });
+    const poller = await client.beginAnalyzeDocument('prebuilt-read', fileBuffer);
 
     const result = await poller.pollUntilDone();
 
