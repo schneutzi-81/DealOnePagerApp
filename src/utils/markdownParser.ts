@@ -2,6 +2,13 @@ import { marked } from 'marked';
 import type { DealOnePagerFields, TableRow } from '../types';
 import { FIELD_LABELS, TABLE_FIELDS, TABLE_COL_COUNTS, DEFAULT_FIELDS } from '../types';
 
+/** Strip YAML front-matter (--- ... ---) from the top of a markdown string. */
+function stripFrontMatter(markdown: string): string {
+  // Match an optional BOM, then a --- fence at the very start
+  const fmPattern = /^\ufeff?---\r?\n[\s\S]*?\n---\r?\n?/;
+  return markdown.replace(fmPattern, '');
+}
+
 /** Normalize a string for fuzzy matching. */
 function normalize(str: string): string {
   return str
@@ -52,11 +59,14 @@ function textToRows(text: string, colCount: number): TableRow[] {
 
 /** Parse a markdown string and populate DealOnePagerFields. */
 export function parseMarkdownToFields(markdown: string): DealOnePagerFields {
+  // Strip YAML front-matter before lexing
+  const cleaned = stripFrontMatter(markdown);
+
   // Deep-clone the default (preserves empty row arrays)
   const fields: DealOnePagerFields = JSON.parse(JSON.stringify(DEFAULT_FIELDS));
   const unmatchedParts: string[] = [];
 
-  const tokens = marked.lexer(markdown);
+  const tokens = marked.lexer(cleaned);
   let currentField: keyof DealOnePagerFields | null = null;
   let currentLines: string[] = [];
 
@@ -121,3 +131,4 @@ export function parseMarkdownToFields(markdown: string): DealOnePagerFields {
 
   return fields;
 }
+
