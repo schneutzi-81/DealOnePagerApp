@@ -65,7 +65,6 @@ describe('parseMarkdownToFields', () => {
   it('returns default empty values when markdown is empty', () => {
     const fields = parseMarkdownToFields('');
     expect(fields.customerName).toBe('');
-    // Default fields pre-fill table arrays with empty rows
     expect(fields.risksMitigation.every(r => r.cols.every(c => c === ''))).toBe(true);
   });
 
@@ -104,5 +103,90 @@ describe('parseMarkdownToFields', () => {
     expect(fields.company).toBe('TechCorp Inc.');
     expect(fields.industry).toBe('Technology');
     expect(fields.risksMitigation[0].cols[0]).toBe('Security risk');
+  });
+
+  // ── YAML front-matter ───────────────────────────────────────────────────────
+
+  it('strips YAML front-matter before parsing', () => {
+    const md = [
+      '---',
+      'title: My Deal',
+      'date: 2025-01-01',
+      '---',
+      '# Acme Corp — Big Deal',
+      '',
+      '## Company',
+      'Acme Corporation',
+    ].join('\n');
+
+    const fields = parseMarkdownToFields(md);
+    expect(fields.customerName).toBe('Acme Corp — Big Deal');
+    expect(fields.company).toBe('Acme Corporation');
+    expect(fields.additionalComments).not.toContain('title: My Deal');
+    expect(fields.additionalComments).not.toContain('date: 2025-01-01');
+  });
+
+  it('handles document without front-matter unchanged', () => {
+    const md = '# Simple Deal\n\n## Company\nAcme\n';
+    const fields = parseMarkdownToFields(md);
+    expect(fields.customerName).toBe('Simple Deal');
+    expect(fields.company).toBe('Acme');
+  });
+
+  it('handles front-matter with BOM character', () => {
+    const md = '\ufeff---\ntitle: BOM Test\n---\n# BOM Deal\n## Company\nBOM Corp\n';
+    const fields = parseMarkdownToFields(md);
+    expect(fields.customerName).toBe('BOM Deal');
+    expect(fields.company).toBe('BOM Corp');
+  });
+
+  // ── Alias support ────────────────────────────────────────────────────────────
+
+  it('maps alias "TCO" to tcv field', () => {
+    const md = '## TCO\n€ 3,000,000\n';
+    const fields = parseMarkdownToFields(md);
+    expect(fields.tcv).toBe('€ 3,000,000');
+  });
+
+  it('maps alias "Total Contract Value" to tcv field', () => {
+    const md = '## Total Contract Value\n€ 1,500,000\n';
+    const fields = parseMarkdownToFields(md);
+    expect(fields.tcv).toBe('€ 1,500,000');
+  });
+
+  it('maps alias "Executive Summary" to summaryKeyPoints', () => {
+    const md = '## Executive Summary\nKey highlights here\n';
+    const fields = parseMarkdownToFields(md);
+    expect(fields.summaryKeyPoints).toContain('Key highlights here');
+  });
+
+  it('maps alias "Scope of Work" to subjectScope', () => {
+    const md = '## Scope of Work\nDeliver cloud platform\n';
+    const fields = parseMarkdownToFields(md);
+    expect(fields.subjectScope).toContain('Deliver cloud platform');
+  });
+
+  it('maps alias "Action Items" to nextSteps', () => {
+    const md = '## Action Items\n- 2025-01-01 | Schedule meeting\n';
+    const fields = parseMarkdownToFields(md);
+    expect(fields.nextSteps[0].cols[1]).toContain('Schedule meeting');
+  });
+
+  it('maps alias "Competitors" to competition', () => {
+    const md = '## Competitors\n- Rival Corp | Strong | Price advantage\n';
+    const fields = parseMarkdownToFields(md);
+    expect(fields.competition[0].cols[0]).toBe('Rival Corp');
+  });
+
+  it('maps alias "Notes" to additionalComments', () => {
+    const md = '## Notes\nSome internal note\n';
+    const fields = parseMarkdownToFields(md);
+    expect(fields.additionalComments).toContain('Some internal note');
+  });
+
+  it('maps alias "Financials" to commercials', () => {
+    const md = '## Financials\n- Year 1 | 100000 | 35\n';
+    const fields = parseMarkdownToFields(md);
+    expect(fields.commercials[0].cols[0]).toBe('Year 1');
   });
 });

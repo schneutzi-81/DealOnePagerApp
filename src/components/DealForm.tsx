@@ -77,6 +77,8 @@ const TableEditor: React.FC<TableEditorProps> = ({
   cellWidths,
   dropdownCols,
 }) => {
+  const dragSrcRef = React.useRef<number | null>(null);
+
   const addRow = () =>
     onChange([...rows, { cols: Array(headers.length).fill('') }]);
 
@@ -92,11 +94,64 @@ const TableEditor: React.FC<TableEditorProps> = ({
       )
     );
 
+  /** Move focus to adjacent cell via keyboard. */
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement>,
+    ri: number,
+    ci: number
+  ) => {
+    const colCount = headers.length;
+    const rowCount = rows.length;
+    let targetRi = ri;
+    let targetCi = ci;
+
+    if (e.key === 'ArrowRight' || (e.key === 'Tab' && !e.shiftKey)) {
+      if (ci < colCount - 1) { targetCi = ci + 1; }
+      else if (ri < rowCount - 1) { targetRi = ri + 1; targetCi = 0; }
+      else return; // let default Tab handle
+    } else if (e.key === 'ArrowLeft' || (e.key === 'Tab' && e.shiftKey)) {
+      if (ci > 0) { targetCi = ci - 1; }
+      else if (ri > 0) { targetRi = ri - 1; targetCi = colCount - 1; }
+      else return;
+    } else if (e.key === 'ArrowDown' || e.key === 'Enter') {
+      if (ri < rowCount - 1) { targetRi = ri + 1; }
+      else return;
+    } else if (e.key === 'ArrowUp') {
+      if (ri > 0) { targetRi = ri - 1; }
+      else return;
+    } else {
+      return;
+    }
+
+    if (e.key !== 'Tab') e.preventDefault();
+    const table = (e.currentTarget as HTMLElement).closest('table');
+    if (!table) return;
+    const cell = table.querySelector<HTMLElement>(
+      `[data-ri="${targetRi}"][data-ci="${targetCi}"]`
+    );
+    cell?.focus();
+  };
+
+  // Drag-to-reorder handlers
+  const handleDragStart = (ri: number) => { dragSrcRef.current = ri; };
+  const handleDragOver = (e: React.DragEvent, ri: number) => {
+    e.preventDefault();
+    if (dragSrcRef.current === null || dragSrcRef.current === ri) return;
+    const newRows = [...rows];
+    const [moved] = newRows.splice(dragSrcRef.current, 1);
+    newRows.splice(ri, 0, moved);
+    dragSrcRef.current = ri;
+    onChange(newRows);
+  };
+  const handleDragEnd = () => { dragSrcRef.current = null; };
+
   return (
     <div className="overflow-x-auto [-webkit-overflow-scrolling:touch]">
       <table className="w-full border-collapse text-xs">
         <thead>
           <tr>
+            {/* drag handle column */}
+            <th className="w-5 border border-[var(--soft-gray)] bg-[var(--light-silver)]" aria-label="Drag to reorder" />
             {headers.map((h, i) => (
               <th
                 key={i}
@@ -111,13 +166,31 @@ const TableEditor: React.FC<TableEditorProps> = ({
         </thead>
         <tbody>
           {rows.map((row, ri) => (
-            <tr key={ri}>
+            <tr
+              key={ri}
+              draggable
+              onDragStart={() => handleDragStart(ri)}
+              onDragOver={(e) => handleDragOver(e, ri)}
+              onDragEnd={handleDragEnd}
+              className="group"
+            >
+              {/* drag handle */}
+              <td
+                className="border border-[var(--soft-gray)] text-center cursor-grab active:cursor-grabbing text-gray-300 group-hover:text-gray-500 select-none"
+                aria-hidden="true"
+                title="Drag to reorder"
+              >
+                ⠿
+              </td>
               {headers.map((_, ci) => (
                 <td key={ci} className="border border-[var(--soft-gray)] p-0">
                   {dropdownCols && dropdownCols[ci] ? (
                     <select
                       value={row.cols[ci] ?? ''}
                       onChange={(e) => updateCell(ri, ci, e.target.value)}
+                      onKeyDown={(e) => handleKeyDown(e, ri, ci)}
+                      data-ri={ri}
+                      data-ci={ci}
                       className="w-full px-2 py-2 text-sm outline-none focus:bg-[var(--light-silver)] bg-white min-h-[44px]"
                     >
                       <option value="">— Select —</option>
@@ -130,6 +203,9 @@ const TableEditor: React.FC<TableEditorProps> = ({
                       type="text"
                       value={row.cols[ci] ?? ''}
                       onChange={(e) => updateCell(ri, ci, e.target.value)}
+                      onKeyDown={(e) => handleKeyDown(e, ri, ci)}
+                      data-ri={ri}
+                      data-ci={ci}
                       className="w-full px-2 py-2 text-sm outline-none focus:bg-[var(--light-silver)] min-h-[44px]"
                     />
                   )}
@@ -141,6 +217,7 @@ const TableEditor: React.FC<TableEditorProps> = ({
                   disabled={rows.length <= minRows}
                   className="px-1 text-gray-300 hover:text-[var(--coral)] disabled:opacity-30 min-h-[44px]"
                   title="Remove row"
+                  aria-label="Remove row"
                 >
                   ✕
                 </button>

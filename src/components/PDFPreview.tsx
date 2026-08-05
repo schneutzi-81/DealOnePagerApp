@@ -1,18 +1,21 @@
 import React from 'react';
 import type { DealOnePagerFields, TableRow } from '../types';
+import {
+  PDF_HEADER_BG as HEADER_BG,
+  PDF_SECTION_BG as SECTION_BG,
+  PDF_BORDER as BORDER,
+  PDF_LABEL_BG as LABEL_BG,
+  PDF_CORAL as CORAL,
+  PDF_PAGE_W as PAGE_W,
+  RAG_COLORS,
+} from '../config/pdfTokens';
 
 interface PDFPreviewProps {
   fields: DealOnePagerFields;
   id?: string;
+  /** Optional base64 / data-URL for a logo shown in the header. */
+  logoDataUrl?: string;
 }
-
-// ── Design tokens ─────────────────────────────────────────────────────────────
-const HEADER_BG = '#0E0E0E';
-const SECTION_BG = '#1A1A1A';
-const BORDER = '#E5E5E5';
-const LABEL_BG = '#F5F5F5';
-const CORAL = '#F7675E';
-const PAGE_W = 1123; // A4 landscape px @ 96 dpi (≈297mm)
 
 // ── Style helpers ─────────────────────────────────────────────────────────────
 const sectionHeader = (extra?: React.CSSProperties): React.CSSProperties => ({
@@ -48,10 +51,7 @@ const labelCell = (extra?: React.CSSProperties): React.CSSProperties => ({
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function ragColor(rag: string): string {
   const r = (rag || '').toLowerCase().trim();
-  if (r === 'positive') return '#22C55E';
-  if (r === 'neutral') return '#F97316';
-  if (r === 'issue') return '#EF4444';
-  return 'transparent';
+  return RAG_COLORS[r] ?? 'transparent';
 }
 
 function padRows(rows: TableRow[], min: number, cols: number): TableRow[] {
@@ -98,7 +98,7 @@ const TwoColRows: React.FC<{ rows: TableRow[]; min?: number }> = ({ rows, min = 
 );
 
 // ── Main component ────────────────────────────────────────────────────────────
-export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields, id = 'pdf-preview' }) => {
+export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields, id = 'pdf-preview', logoDataUrl }) => {
   return (
     <div
       id={id}
@@ -137,6 +137,13 @@ export const PDFPreview: React.FC<PDFPreviewProps> = ({ fields, id = 'pdf-previe
           Business Lines:{' '}
           <span style={{ fontWeight: 600 }}>{fields.businessLines || '[insert business line]'}</span>
         </span>
+        {logoDataUrl && (
+          <img
+            src={logoDataUrl}
+            alt="Company logo"
+            style={{ marginLeft: 'auto', maxHeight: '28px', maxWidth: '80px', objectFit: 'contain' }}
+          />
+        )}
       </div>
 
       {/* ── Two-column body ─────────────────────────────────────────────── */}
